@@ -1,0 +1,51 @@
+name: Build and Push Docker Image to Artifact Registry
+
+on:
+  workflow_call:
+    inputs:
+      image_name:
+        description: ""
+        required: true
+        type: string
+      image_tags:
+        description: ""
+        required: true
+        type: string
+      dockerfile:
+        description: ""
+        required: true
+        type: string
+      context:
+        description: ""
+        required: true
+        type: string
+    secrets:
+      project_id:
+        required: true
+        description: ""
+      credentials_json:
+        required: true
+        description: ""
+        
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+  
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.credentials_json }}
+
+      - name: Build and Push Docker Image to Artifact Registry
+        uses: RafikFarhad/push-to-gcr-github-action@v5-beta
+        with:
+          registry: us-central1-docker.pkg.dev
+          project_id: ${{ secrets.project_id }}
+          image_name: base/${{ inputs.image_name }}
+          image_tags: ${{ inputs.image_tag }}
+          dockerfile: ${{ inputs.dockerfile }}
+          context: ${{ inputs.context }}
