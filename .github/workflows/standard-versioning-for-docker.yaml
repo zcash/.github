@@ -19,9 +19,9 @@ jobs:
         if [ "${{ github.ref_name }}" != "" ] && [ "${{ github.ref_name }}" != "main" ]; then
           echo "tags=${{ github.ref_name }},${{ github.sha }}" >> $GITHUB_OUTPUT
         fi
-        if [ "${{ github.ref_name }}" = "main" ]; then
-          echo "tags=latest,${{ github.sha }}" >> $GITHUB_OUTPUT
-        fi
+        #if [ "${{ github.ref_name }}" = "main" ]; then
+          #echo "tags=latest,${{ github.sha }}" >> $GITHUB_OUTPUT
+        #fi
         if [ "${{ github.event_name }}" = "pull_request" ]; then
-          echo "tags=${{ github.event.pull_request.head.ref }},${{ github.event.pull_request.head.sha }}" >> $GITHUB_OUTPUT
+          echo "tags=latest,${{ github.event.pull_request.head.ref }},${{ github.event.pull_request.head.sha }}" >> $GITHUB_OUTPUT
         fi
