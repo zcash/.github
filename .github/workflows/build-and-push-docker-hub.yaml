@@ -19,6 +19,10 @@ on:
         description: "Build context for the Docker image"
         required: true
         type: string
+      build-args:
+        description: "Docker build args"
+        required: true
+        type: string
     secrets:
       dockerhub_registry:
         required: true
@@ -69,3 +73,4 @@ jobs:
           context: ${{ inputs.context }}
           push: true
           tags: ${{ env.tags_fixed }}
+          build-args: ${{ inputs.build-args }}
