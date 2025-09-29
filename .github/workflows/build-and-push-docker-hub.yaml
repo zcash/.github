@@ -1,10 +1,10 @@
-name: Build and Push Docker Image to Docker Hub
+name: Build, Attest (SBOM/Provenance) & Sign to Docker Hub
 
 on:
   workflow_call:
     inputs:
       image_name:
-        description: "Name of the Docker image to build and push"
+        description: "Name of the Docker image to build and push (e.g. user/repo)"
         required: true
         type: string
       image_tags:
@@ -34,25 +34,33 @@ on:
         required: true
         description: "Docker Hub password"
 
+permissions:
+  # Needed for keyless signing with Cosign
+  id-token: write
+  contents: read
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    env:
+      REGISTRY: ${{ secrets.dockerhub_registry }}
+      IMAGE_NAME: ${{ inputs.image_name }}
     steps:
       - name: Set Docker Image Tags
         id: set-tags
         run: |
+          set -euo pipefail
           TAGS="${{ inputs.image_tags }}"
-          REGISTRY="${{ secrets.dockerhub_registry }}/${{ inputs.image_name }}"
           IFS=',' read -ra ELEMENTS <<< "$TAGS"
           TAGS_FIXED=""
           for ELEMENT in "${ELEMENTS[@]}"; do
-            TAGS_FIXED+="$REGISTRY:$ELEMENT,"
+            TAGS_FIXED+="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$ELEMENT,"
           done
           TAGS_FIXED=${TAGS_FIXED%,}
           echo "tags_fixed=$TAGS_FIXED" >> $GITHUB_ENV
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -66,11 +74,51 @@ jobs:
           username: ${{ secrets.dockerhub_username }}
           password: ${{ secrets.dockerhub_password }}
 
-      - name: Build and Push
-        uses: docker/build-push-action@v5
+      # Buildx will publish:
+      # - Image (with your tags)
+      # - SBOM as an OCI referrer (sbom: true)
+      # - SLSA provenance as an OCI referrer (provenance: true)
+      - name: Build and Push (with SBOM & provenance)
+        id: build
+        uses: docker/build-push-action@v6
         with:
           file: ${{ inputs.dockerfile }}
           context: ${{ inputs.context }}
           push: true
           tags: ${{ env.tags_fixed }}
           build-args: ${{ inputs.build-args }}
+          sbom: true
+          provenance: true     # in v6 you can also use 'provenance: mode=max'
+
+      # Sign by digest (one signature covers all tags pointing to the same digest)
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Cosign sign image by digest (keyless OIDC)
+        env:
+          IMAGE_REF: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          set -euo pipefail
+          echo "Signing $IMAGE_REF@$DIGEST"
+          cosign sign --yes "$IMAGE_REF@$DIGEST"
+
+      # Generate an SPDX SBOM locally (optional, if you want a signed attestation too)
+      - name: Generate SBOM (SPDX JSON)
+        run: |
+          set -euo pipefail
+          docker sbom ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }} \
+            --format spdx-json > sbom.spdx.json
+
+      # Upload the SBOM as a signed in-toto attestation
+      - name: Upload signed SBOM attestation
+        env:
+          IMAGE_REF: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          set -euo pipefail
+          echo "Attesting SBOM for $IMAGE_REF@$DIGEST"
+          cosign attest --yes \
+            --type spdx \
+            --predicate sbom.spdx.json \
+            "$IMAGE_REF@$DIGEST"
