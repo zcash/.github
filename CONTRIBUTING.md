@@ -75,13 +75,13 @@ Projects in this organization follow [Semantic Versioning](https://semver.org/).
 If possible, it is desirable for users to use the latest released version.
 Detailed change logs are available in the `CHANGELOG.md` file.
 
-Please note that the libraries in this repository are under continuous
-development and new SemVer major-version releases are frequent. Users of this
-application should expect a corresponding maintenance burden. The
-`CHANGELOG.md` file is vital to understanding these changes. Under normal
-circumstances, proposed changes will be considered for application against the
-last two major release versions; bug fixes will be backported to versions that
-we are aware of being widely in use in the Zcash ecosystem.
+Please note that any libraries in this repository are under continuous
+development and new backwards-incompatible releases are frequent. Users should
+expect a corresponding maintenance burden. The `CHANGELOG.md` file is vital to
+understanding these changes. Under normal circumstances, proposed changes will
+be considered for application against the last two major release versions; bug
+fixes will be backported to versions that we are aware of being widely in use
+in the Zcash ecosystem.
 
 ### Reporting Bugs
 
@@ -449,7 +449,7 @@ This means:
 
 #### Error Handling
 
-Our rust projects consistently use `Result` with custom error `enum`s to indicate
+Our Rust projects consistently use `Result` with custom error `enum`s to indicate
 the presence of errors. The `std::error::Error` trait should be implemented for
 such error types when the error type is part of the public API of the crate.
 Publically accessible error enums should generally be marked non-exhaustive

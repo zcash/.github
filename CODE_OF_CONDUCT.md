@@ -47,14 +47,12 @@ is deemed necessary and appropriate to the circumstances. Maintainers are
 obligated to maintain confidentiality with regard to the reporter of an
 incident.
 
-You may send reports to [our Conduct email](mailto:conduct@z.cash).
+If you wish to report an instance of conduct that violates this code, the
+following have made themselves available for contact over Signal:
 
-If you wish to contact specific maintainers directly, the following have made
-themselves available for conduct issues:
-
-- Daira-Emma Hopwood (daira-emma at zodl.com)
-- Kris Nuttycombe (kris at zodl.com)
-- Jack Grigg (jack at zodl.com)
+- Daira-Emma Hopwood (@dairaemma.31)
+- Kris Nuttycombe (@nuttycom.01)
+- Pili (@pilizcash.01)
 
 This Code of Conduct is adapted from the [Contributor Covenant][homepage],
 version 1.3.0, available at
