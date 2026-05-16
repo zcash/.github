@@ -4,6 +4,36 @@ https://github.com/RD-Crypto-Spec/Responsible-Disclosure/tree/d47a5a3dafa5942c88
 
 # Security Disclosures
 
+## Vulnerability Categorization
+
+The Zcash maintainers have defined the following categories for vulnerabilities.
+
+### Critical
+
+* Violations of the monetary base
+* Violations of consensus rules that result in consensus-invalid transactions
+  being accepted by network full nodes.
+* Remotely-exploitable vulnerabilities that may result in individual user loss
+  of funds or compromise of their devices without user interaction. Think on
+  the order of vulnerabilities that might result in remote code execution or
+  remote key extraction.
+
+### High
+
+* All other forms of remotely-triggered consensus divergence or network split.
+* DoS vulnerabilities affecting full node software.
+* Other vulnerabilities that might result in remotely-triggered individual user
+  loss of funds. This does not include vulnerabilities resulting from careless
+  or intentional API misuse by wallet software.
+
+### Moderate
+
+* Other vulnerabilities that might result in individual user loss of funds.
+
+### Low
+
+* Individual user wallet DoS.
+
 ## Receiving Disclosures
 
 The Zcash maintainers are committed to working with researchers who submit
@@ -15,13 +45,31 @@ Please submit issues via Signal. We have no email address to report security
 issues; email is not suitable for this purpose for both reliability and
 security reasons (even if encryption is used).
 
-Please create a Signal group with the following users to report a security
-issue. Do not reuse a previous group for a new issue.
+For critical vulnerabilities, please create a Signal group with the following
+users to report a security issue. Do not reuse a previous group for a new
+issue.
 
 ```
 dairaemma.31
 pilizcash.01
+nuttycom.01
 ```
+
+For all other vulnerabilities, please use the GitHub "Report a Vulnerability"
+feature for the appropriate repository, available at:
+
+* https://github.com/zcash/zcash/security/advisories
+* https://github.com/zcash/librustzcash/security/advisories
+* https://github.com/zcash/orchard/security/advisories
+* https://github.com/zcash/sapling-crypto/security/advisories
+
+And so forth.
+
+WARNING: overstating the severity of any reported vulnerability, according
+to the rubric presented above, WILL MAKE THE REPORTER INELIGIBLE FOR
+COMPENSATION UNDER ANY BUG BOUNTY PROGRAM. The Zcash maintainers are currently
+experiencing a large number of spurious issues being incorrectly reported as
+critical vulnerabilities. Choose wisely.
 
 ## Sending Disclosures
 
