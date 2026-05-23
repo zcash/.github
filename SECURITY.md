@@ -6,7 +6,10 @@ https://github.com/RD-Crypto-Spec/Responsible-Disclosure/tree/d47a5a3dafa5942c88
 
 ## Vulnerability Categorization
 
-The Zcash maintainers have defined the following categories for vulnerabilities.
+The Zcash maintainers have defined the following categories for
+vulnerabilities. This vulnerability scoring is used by the maintainers to
+prioritize how urgently each potential vulnerability needs to be fixed; it's
+not a metric to be gamed for payouts from any bounty program.
 
 ### Critical
 
@@ -78,16 +81,17 @@ feature for the appropriate repository, available at:
 
 * https://github.com/zcash/zcash/security/advisories
 * https://github.com/zcash/librustzcash/security/advisories
+* https://github.com/zcash/lightwalletd/security/advisories
 * https://github.com/zcash/orchard/security/advisories
 * https://github.com/zcash/sapling-crypto/security/advisories
 
 And so forth.
 
-WARNING: overstating the severity of any reported vulnerability, according
-to the rubric presented above, WILL MAKE THE REPORTER INELIGIBLE FOR
-COMPENSATION UNDER ANY BUG BOUNTY PROGRAM. The Zcash maintainers are currently
-experiencing a large number of spurious issues being incorrectly reported as
-critical vulnerabilities. Choose wisely.
+WARNING: The Zcash maintainers are currently experiencing a large number of
+spurious or low-severity issues being incorrectly reported as critical
+vulnerabilities. Overstating the severity of any reported vulnerability,
+according to the rubric presented above, MAY MAKE THE REPORTER INELIGIBLE FOR
+COMPENSATION UNDER ANY BUG BOUNTY PROGRAM. 
 
 ## Sending Disclosures
 
